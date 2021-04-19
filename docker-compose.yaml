@@ -1,0 +1,44 @@
+version: '2'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  phpfpm:
+    image: 'laravel-app:latest'
+    networks:
+      - app-tier
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_DATABASE_NAME=innovateinclusion
+      - MARIADB_DATABASE_USER=innovateinclusion
+      - MARIADB_PASSWORD_PASSWORD=innovateinclusion
+    volumes:
+      - ./src/:/app
+  mariadb:
+    image: 'bitnami/mariadb:latest'
+    networks:
+      - app-tier
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=innovateinclusion
+      - MARIADB_DATABASE=innovateinclusion
+      - MARIADB_PASSWORD=innovateinclusion
+    volumes:
+      - mariadb_data:/bitnami/mariadb
+  nginx:
+    image: 'bitnami/nginx:latest'
+    depends_on:
+      - phpfpm
+    networks:
+      - app-tier
+    ports:
+      - '8080:8080'
+      - '8443:8443'
+    volumes:
+      - ./vhosts/nginx.conf:/opt/bitnami/nginx/conf/server_blocks/nginx.conf
+      - ./src/:/app
+volumes:
+  mariadb_data:
+    driver: local
