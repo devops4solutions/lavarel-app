@@ -1,0 +1,104 @@
+apiVersion: {{ template "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-phpfpm
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}-phpfpm
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-phpfpm
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}-phpfpm
+        image: "{{.Values.image.registry}}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        {{- if .Values.mariadb.enabled }}
+          - name: MARIADB_HOST
+            value: {{ include "phpfpm.databaseHost" . | quote }}
+          - name: MARIADB_PORT
+            value: {{ include "phpfpm.databasePort" . | quote }}
+          - name: MARIADB_DATABASE_NAME
+            value: {{ include "phpfpm.databaseName" . | quote }}
+          - name: MARIADB_DATABASE_USER
+            value: {{ include "phpfpm.databaseUser" . | quote }}
+          - name: MARIADB_DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "phpfpm.databaseSecretName" . | quote }}
+                key: mariadb-password
+      {{ end }}
+      {{- if .Values.extraEnv }}
+      {{- include "phpfpm.tplValue" (dict "value" .Values.extraEnv "context" $) | nindent 12 }}
+      {{- end }}
+        ports:
+        - containerPort: {{ .Values.phpfpmService.phpfpmPort }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.phpfpmService.phpfpmPort }}
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+---
+apiVersion: {{ template "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-nginx
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}-nginx
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-nginx
+#      annotations:
+#        checksum/config: {{ include (print $.Template.BasePath "/configMap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}-nginx
+        image: "bitnami/nginx:latest"
+        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.nginxService.internalPort }}
+        - name: https
+          containerPort: 8443
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /opt/bitnami/nginx/conf/server_blocks
+        - name: nginx-data
+          mountPath: /app
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: {{ template "fullname" . }}
+      - name: nginx-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{ end }}
