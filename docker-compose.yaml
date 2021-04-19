@@ -6,7 +6,7 @@ networks:
 
 services:
   phpfpm:
-    image: 'laravel-app:latest'
+    image: 'lavarel-app:latest'
     networks:
       - app-tier
     environment:
