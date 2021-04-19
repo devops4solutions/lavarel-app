@@ -10,7 +10,9 @@ WORKDIR /build
 
 RUN [ "npm", "install", "-g", "cross-env" ]
 
-COPY . .
+
+COPY ./src .
+
 
 RUN [ "npm", "install" ]
 RUN [ "npm", "run", "dev" ]
