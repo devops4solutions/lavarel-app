@@ -14,8 +14,6 @@ services:
       - MARIADB_DATABASE_NAME=innovateinclusion
       - MARIADB_DATABASE_USER=innovateinclusion
       - MARIADB_PASSWORD_PASSWORD=innovateinclusion
-    volumes:
-      - ./src/:/app
   mariadb:
     image: 'bitnami/mariadb:latest'
     networks:
