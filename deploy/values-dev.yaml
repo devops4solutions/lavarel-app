@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   registry: gcr.io
-  repository: www-hosting-dev-6172682f/innovate-inclusion
+  repository: www-hosting-dev-6172682f/lavarel-app
   tag: latest
   pullPolicy: IfNotPresent
 nginxService:
