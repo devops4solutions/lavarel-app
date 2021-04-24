@@ -1,3 +1,28 @@
+### Deploy a sample laravel application using Helm Charts
+
+- All laravel code is placed under `src` folder
+
+
+
+# How to Build
+
+  - 
+
+
+```
+docker build -t lavarel-app .
+docker tag lavarel-app:latest gcr.io/yourgcr/lavarel-app
+docker push gcr.io/yourgcr/lavarel-app:latest
+
+To update the dependency
+cd helm-charts/
+helm dependency update
+helm install test-lavarel-app -f ./deploy/values-dev.yaml ./helm-charts
+
+```
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
