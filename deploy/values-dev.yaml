@@ -41,15 +41,15 @@ mariadb:
 ingress:
   enabled: true
   hosts:
-    - "lavarel-app.com"
+    - "lavarel-app-nidhi.com"
   annotations:
     kubernetes.io/ingress.class: "nginx"
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   tls:
   - hosts:
-    - lavarel-app.com
-    secretName: lavarel-appwww-dev-tls
+    - lavarel-app-nidhi.com
+    secretName: lavarel-app-www-dev-tls
 resources:
   limits:
     cpu: 120m
