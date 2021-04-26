@@ -16,6 +16,7 @@ docker push gcr.io/yourgcr/lavarel-app:latest
 
 To update the dependency
 cd helm-charts/
+helm dep build
 helm dependency update
 helm install test-lavarel-app -f ./deploy/values-dev.yaml ./helm-charts
 
