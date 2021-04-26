@@ -1,7 +1,8 @@
-### Deploy a sample laravel application using Helm Charts
+# Deploy a sample laravel application using Helm Charts
 
+This project will help you to deploy a sample laravel application using Helm Charts
 
-# Create a project using below command and run it locally
+## Create a project using below command and run it locally
 
 - composer create-project  laravel/laravel
 - When you create a project it generates a `.env` file which has the API key and all the db details you can provide here
@@ -15,7 +16,7 @@ For this demo, I have placed all the code under `src` folder
 
 
 
-# How to Build
+## How to Build
 
 ```
 docker build -t lavarel-app .
