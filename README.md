@@ -4,13 +4,13 @@ This project will help you to deploy a sample laravel application using Helm Cha
 
 ## Create a project using below command and run it locally
 
-- composer create-project  laravel/laravel
+- `composer create-project  laravel/laravel`
 - When you create a project it generates a `.env` file which has the API key and all the db details you can provide here
 
 Install dependencies
-- docker run --rm -v $(pwd):/app composer install
+- `docker run --rm -v $(pwd):/app composer install`
 - If you don't have docker installed then just run `composer install`
-- php artisan serve ( Run it locally and test it if the application is coming up)
+- `php artisan serve` ( Run it locally and test it if the application is coming up)
 
 For this demo, I have placed all the code under `src` folder
 
