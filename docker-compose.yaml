@@ -36,7 +36,6 @@ services:
       - '8443:8443'
     volumes:
       - ./vhosts/nginx.conf:/opt/bitnami/nginx/conf/server_blocks/nginx.conf
-      - ./src/:/app
 volumes:
   mariadb_data:
     driver: local
